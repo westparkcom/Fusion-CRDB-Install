@@ -90,6 +90,7 @@ else
 	warning "------------"
 	echo "When you have added this text to the file /root/.ssh/authorized_keys on server ${db_host[0]}, press Enter to continue"
 	read placeholder
+	warning "If you asked if you want to continue connecting, enter yes and press enter"
 	scp root@${db_host[0]}:/usr/local/cockroach/certs/safe/ca.key /usr/local/cockroach/certs/safe
 	err_check $?
 	scp root@${db_host[0]}:/usr/local/cockroach/certs/ca.crt /usr/local/cockroach/certs
