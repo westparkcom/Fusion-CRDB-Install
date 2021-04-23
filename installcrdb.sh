@@ -172,3 +172,4 @@ if [ .$servernum = .'1' ]; then
 fi
 echo ""
 verbose "Installation complete!"
+warning "NOTE: For security limit increases to take effect please restart this server"
