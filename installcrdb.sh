@@ -156,8 +156,8 @@ if [ .$servernum = .'1' ]; then
 	warning "cockroach sql --certs-dir=/usr/local/cockroach/certs"
 	warning "CREATE USER <sql_user> WITH LOGIN PASSWORD '<sql_password>';"
 	warning "GRANT admin TO <sql_user>;"
-	echo
-	verbose "Once you have added the user you will be able to log into http://${iplist[0]:8080 with the credentials you added"
+	echo ""
+	verbose "Once you have added the user you will be able to log into http://${iplist[0]}:8080 with the credentials you added"
 fi
-echo
+echo ""
 verbose "Installation complete!"
