@@ -1,4 +1,4 @@
-#!/bin/bassh
+#!/bin/bash
 
 installtype='crdb'
 # Color displays
