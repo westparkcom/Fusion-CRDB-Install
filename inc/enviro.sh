@@ -24,6 +24,10 @@ os_codename=$(lsb_release -cs)
 #cpu details
 cpu_name=$(uname -m)
 
+# Set program version
+php_ver=None
+php_lib=None
+
 if [ .$cpu_name = .'x86_64' ]; then
 	verbose "64 bit CPU detected!"
 	if [ .$(grep -o -w 'lm' /proc/cpuinfo | head -n 1) = .'lm' ]; then
@@ -42,6 +46,8 @@ if [ .$installtype = .'fusion' ]; then
 	if [ .$os_name = .'Debian' ]; then
 		if [ .$os_codename = .'buster' ]; then
 			verbose "${os_name} ${os_codename} detected, continuing!"
+			php_ver=7.3
+			php_lib=20180731
 		else
 			error "${os_name} ${os_codename} detected, please use Debian buster x86_64!"
 			exit 3
