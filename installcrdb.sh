@@ -19,7 +19,7 @@ fi
 . ./config.sh
 
 if [ .$baseconfig != ."present" ]
-	error "You must create config.sh from example file before installing!"
+	error "You must create config.sh from config.example.sh file before installing!"
 	exit 100
 fi
 
@@ -42,6 +42,11 @@ else
 	exit 3
 fi
 
+# Get list of IP addresses
+read -ra iplist <<< `hostname -I`
+crdb_hosts=$(printf ",%s" "${db_host[@]}")
+crdb_hosts=${crdb_hosts:1}
+
 # removes the cd img from the /etc/apt/sources.list file (not needed after base install)
 sed -i '/cdrom:/d' /etc/apt/sources.list
 
@@ -53,11 +58,12 @@ apt dist-upgrade
 apt install -y wget nano net-tools
 
 # Download CRDB, install binary
+verbose "Downloading and installing Cockroach."
 wget -qO- $crdb_url | tar xvz
 err_check $?
-
 cp -i ${crdb_version}/cockroach /usr/local/bin
 
+verbose "Adding cockroach user"
 useradd cockroach
 mkdir /usr/local/cockroach
 mkdir /usr/local/cockroach/certs
@@ -73,6 +79,23 @@ if [ .$servernum = .'1' ]; then
 	err_check $?
 	verbose "Creating root client certificate"
 	cockroach cert create-client root --certs-dir=/usr/local/cockroach/certs --ca-key=/usr/local/cockroach/certs/safe/ca.key
+else
+	verbose "Creating SSH key. PLEASE LEAVE THE PASSWORD BLANK"
+	ssh-keygen -t rsa -b 4096 -C "${iplist[0]}" -f /root/.ssh/id_rsa
+	err_check $?
+	warning "You will need to copy the text in between the ------------ markers into the file /root/.ssh/authorized_keys on server ${db_host[0]}"
+	echo
+	warning "------------"
+	cat /root/.ssh/id_rsa.pub
+	warning "------------"
+	echo "When you have added this text to the file /root/.ssh/authorized_keys on server ${db_host[0]}, press Enter to continue"
+	read placeholder
+	scp root@${db_host[0]}:/usr/local/cockroach/certs/safe/ca.key /usr/local/cockroach/certs/safe
+	err_check $?
+	scp root@${db_host[0]}:/usr/local/cockroach/certs/ca.crt /usr/local/cockroach/certs
+	err_check $?
+	scp root@${db_host[0]}:/usr/local/cockroach/certs/client.root.* /usr/local/cockroach/certs
+	err_check $?
 fi
 
 hostsraw="`hostname` `hostname -f` `hostname -a` `hostname -i` `hostname -I` 127.0.0.1 localhost"
@@ -96,13 +119,7 @@ EOM
 systemctl enable systemd-timesyncd
 # NOTE: This won't work if you're using a container, you will need to set up NTP on the main host
 systemctl start systemd-timesyncd
-err_check_pass $? "Unable to stat NTP sync. If you're running in a container this is expected, you will need to set up NTP on the host server"
-
-
-# Get list of IP addresses
-read -ra iplist <<< `hostname -I`
-crdb_hosts=$(printf ",%s" "${db_host[@]}")
-crdb_hosts=${crdb_hosts:1}
+err_check_pass $? "Unable to start NTP sync. If you're running in a container this is expected, you will need to set up NTP on the host server"
 
 
 # Create Cockroach systemd file
@@ -135,4 +152,12 @@ if [ .$servernum = .'1' ]; then
 	verbose "Initializing CockroachDB server"
 	cockroach init --certs-dir=/usr/local/cockroach/certs/ --host=${iplist[0]}
 	err_check $?
+	verbose "Initialization complete. Please add a new user for web UI login using the following commands, replacing <sql_user> and <sql_password> with a username and password of your choice:"
+	warning "cockroach sql --certs-dir=/usr/local/cockroach/certs"
+	warning "CREATE USER <sql_user> WITH LOGIN PASSWORD '<sql_password>';"
+	warning "GRANT admin TO <sql_user>;"
+	echo
+	verbose "Once you have added the user you will be able to log into http://${iplist[0]:8080 with the credentials you added"
 fi
+echo
+verbose "Installation complete!"
