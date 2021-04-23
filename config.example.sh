@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 baseconfig=present
 
 # FusionPBX settings

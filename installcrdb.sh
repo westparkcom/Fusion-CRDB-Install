@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bassh
 
-installtype = 'crdb'
+installtype='crdb'
 # Color displays
 . ./inc/colors.sh
 

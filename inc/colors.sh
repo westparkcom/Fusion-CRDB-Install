@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 verbose () {
 	echo "${green}$1${normal}"

@@ -1,8 +1,9 @@
+#!/bin/bash
 #Ensure lsb release is installed
 err_check () {
 	case $1 in
 		0) ;;
-		*) error "Program exiting abnormally with error code $1"; exit $1
+		*) error "Program exiting abnormally with error code $1"; exit $1;
 	esac
 }
 

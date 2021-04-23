@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 installtype = 'fusion'
 # Color displays
@@ -18,7 +18,7 @@ if [ .$baseconfig != ."present" ]
 fi
 
 # Ensure root user is installing
-if [ .$EUID != .'0' ]; then
+if [ .$UID != .'0' ]; then
 	error "You must be root to install, exiting..."
 	exit 100
 fi
