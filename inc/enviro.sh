@@ -61,7 +61,7 @@ else
 		fi
 	elif [ .$os_name = .'Ubuntu' ]; then
 		if [ .$os_codename = .'focal' ]; then
-			error "${os_name} ${os_codename} detected, continuing!"
+			verbose "${os_name} ${os_codename} detected, continuing!"
 		else
 			error "${os_name} ${os_codename} detected, please use Debian buster x86_64 or Ubuntu focal x86_64!"
 			exit 3
