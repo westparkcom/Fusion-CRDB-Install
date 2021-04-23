@@ -149,6 +149,16 @@ systemctl enable cockroach
 systemctl start cockroach
 err_check $?
 
+verbose "Increasing limit sizes for better scaling"
+echo "session required        pam_limits.so" >> /etc/pam.d/common-session-noninteractive
+echo "session    required   pam_limits.so" >> /etc/pam.d/common-session
+sed -i '$d' /etc/security/limits.conf
+sed -i '$d' /etc/security/limits.conf
+echo -e "cockroach\tsoft\tnofile\t\t35000" >> /etc/security/limits.conf
+echo -e "cockroach\thard\tnofile\\tt35000" >> /etc/security/limits.conf
+echo "" >> /etc/security/limits.conf
+echo "# End of file" >> /etc/security/limits.conf
+
 if [ .$servernum = .'1' ]; then
 	verbose "Initializing CockroachDB server"
 	cockroach init --certs-dir=/usr/local/cockroach/certs/ --host=${iplist[0]}
