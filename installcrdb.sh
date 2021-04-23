@@ -74,7 +74,7 @@ mkdir /var/log/cockroach
 
 # Create CA certificate and root client if this is the first server in the cluster
 if [ .$servernum = .'1' ]; then
-	verbose "Creating CA certificate, please enter relevant information to create CA"
+	verbose "Creating CA certificate"
 	cockroach cert create-ca --certs-dir=/usr/local/cockroach/certs --ca-key=/usr/local/cockroach/certs/safe/ca.key
 	err_check $?
 	verbose "Creating root client certificate"
