@@ -37,7 +37,7 @@ else
 	exit 3
 fi
 
-if [ .$installtype = 'fusion' ]; then
+if [ .$installtype = .'fusion' ]; then
 	# Installing FusionPBX, only Debian 10 supported
 	if [ .$os_name = .'Debian' ]; then
 		if [ .$os_codename = .'buster' ]; then
