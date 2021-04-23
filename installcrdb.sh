@@ -18,7 +18,7 @@ fi
 . ./inc/enviro.sh
 . ./config.sh
 
-if [ .$baseconfig != ."present" ]
+if [ .$baseconfig != ."present" ]; then
 	error "You must create config.sh from config.example.sh file before installing!"
 	exit 100
 fi
