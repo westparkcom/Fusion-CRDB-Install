@@ -131,7 +131,7 @@ Requires=network.target
 [Service]
 Type=notify
 WorkingDirectory=/usr/local/cockroach
-ExecStart=/usr/local/bin/cockroach start --locality=region=us-central,zone=bcs --certs-dir=/usr/local/cockroach/certs --advertise-addr=${iplist[0]} --join=${crdb_hosts} --cache=.25 --max-sql-memory=.25
+ExecStart=/usr/local/bin/cockroach start --locality=${crdb_locality} --certs-dir=/usr/local/cockroach/certs --advertise-addr=${iplist[0]} --join=${crdb_hosts} --cache=.25 --max-sql-memory=.25
 TimeoutStopSec=60
 Restart=always
 RestartSec=10
