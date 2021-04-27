@@ -1,4 +1,9 @@
 #!/bin/bash
+#########################################################
+# !!!!!PLEASE GO THROUGH ALL SETTINGS IN THIS FILE!!!!! #
+#########################################################
+
+# Placeholder, do not modify
 baseconfig=present
 
 # FusionPBX settings
@@ -9,18 +14,24 @@ fusion_host[2]=10.10.10.60
 fusion_host[3]=10.10.10.60
 fusion_ntp_servers=10.10.10.5 10.10.10.6
 
-# Webserver certificate override
+# Webserver certificate override. Certificate will be copied to /etc/ssl/certs, key will copied to /etc/ssl/private
 #www_cert=/path/to/cert.crt
 #www_chain=/path/to/chain.crt
 #www_key=/path/to/key.key
 
 # Enable TLS on FreeSWITCH
-#switch_tls=false
+#switch_tls=true
 
-# FreeSWITCH TLS certificate override
+# FreeSWITCH TLS certificate override. this will be copied to the /etc/freeswitch/tls folder
 #switch_cert=/path/to/cert.crt
 #switch_chain=/path/to/chain.crt
 #switch_key=/path/to/key.key
+
+# FreeSWITCH Text To Speech. UNCOMMENT ALL SETTINGS!
+#aws_access_key='INSERT_YOUR_KEY_HERE'
+#aws_secret_key='INSERT_YOUR_SECRET_HERE'
+#aws_region_name='us-east-1'
+#aws_default_voice='Joanna'
 
 ## Settings if this is a first time installation
 ### One of: hostname, ip_address or a custom value
@@ -35,7 +46,6 @@ db_host[1]=10.10.10.51
 db_host[2]=10.10.10.52
 db_port=26257
 check_port=8080
-
 
 # CRDB Settings
 ## Download URL, will need to be updated as time goes on

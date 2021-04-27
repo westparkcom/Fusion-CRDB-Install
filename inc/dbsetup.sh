@@ -1,7 +1,7 @@
 #!/bin/bash
 
 exec_sql () {
-	ssh root@${db_host[0]} 'cockroach sql --execute="$1" --certs-dir=/usr/local/cockroach/certs'
+	ssh root@${db_host[0]} 'cockroach sql --execute="use fusionpbx;${1}" --certs-dir=/usr/local/cockroach/certs'
 	err_check $?
 }
 
@@ -87,7 +87,7 @@ if [ .$servernum = .'1' ]; then
 	sed -i /etc/fusionpbx/config.php -e s:"{database_port}:$db_port:"
 	
 	verbose "Initializing FusionPBX database"
-	
+	curdir=`pwd`
 	#get the server hostname
 	if [ .$domain_name = .'hostname' ]; then
 		domain_name=$(hostname -f)
@@ -97,7 +97,42 @@ if [ .$servernum = .'1' ]; then
 	if [ .$domain_name = .'ip_address' ]; then
 		domain_name=$(hostname -I | cut -d ' ' -f1)
 	fi
-	
+	cd /var/www/fusionpbx && php /var/www/fusionpbx/core/upgrade/upgrade_schema.php > /dev/null 2>&1
+	err_check $?
+	#get the domain_uuid
+	domain_uuid=$(/usr/bin/php /var/www/fusionpbx/resources/uuid.php);
+	exec_sql "insert into v_domains (domain_uuid, domain_name, domain_enabled) values('${domain_uuid}', '${domain_name}', 'true');"
+	cd /var/www/fusionpbx && php /var/www/fusionpbx/core/upgrade/upgrade_domains.php
+	user_uuid=$(/usr/bin/php /var/www/fusionpbx/resources/uuid.php);
+	user_salt=$(/usr/bin/php /var/www/fusionpbx/resources/uuid.php);
+	user_name=$system_username
+	if [ .$system_password = .'random' ]; then
+		user_password=$(dd if=/dev/urandom bs=1 count=20 2>/dev/null | base64 | sed 's/[=\+//]//g')
+	else
+		user_password=$system_password
+	fi
+	password_hash=$(php -r "echo md5('$user_salt$user_password');");
+	exec_sql "insert into v_users (user_uuid, domain_uuid, username, password, salt, user_enabled) values('${user_uuid}', '${domain_uuid}', '${user_name}', '${password_hash}', '${user_salt}', 'true');"
+	user_group_uuid=$(/usr/bin/php /var/www/fusionpbx/resources/uuid.php);
+	group_name=superadmin
+	exec_sql "insert into v_user_groups (user_group_uuid, domain_uuid, group_name, group_uuid, user_uuid) values('$user_group_uuid', '$domain_uuid', '$group_name', (SELECT group_uuid from v_groups where group_name='superadmin'), '$user_uuid');"
+	#update xml_cdr url, user and password
+	xml_cdr_username=$(dd if=/dev/urandom bs=1 count=20 2>/dev/null | base64 | sed 's/[=\+//]//g')
+	xml_cdr_password=$(dd if=/dev/urandom bs=1 count=20 2>/dev/null | base64 | sed 's/[=\+//]//g')
+	sed -i /etc/freeswitch/autoload_configs/xml_cdr.conf.xml -e s:"{v_http_protocol}:http:"
+	sed -i /etc/freeswitch/autoload_configs/xml_cdr.conf.xml -e s:"{domain_name}:$database_host:"
+	sed -i /etc/freeswitch/autoload_configs/xml_cdr.conf.xml -e s:"{v_project_path}::"
+	sed -i /etc/freeswitch/autoload_configs/xml_cdr.conf.xml -e s:"{v_user}:$xml_cdr_username:"
+	sed -i /etc/freeswitch/autoload_configs/xml_cdr.conf.xml -e s:"{v_pass}:$xml_cdr_password:"
+	cat > /etc/fusionpbx/local.lua <<- EOM
+--dialplan public - multiple or single
+context_type = 'single';
+EOM
+	cd /var/www/fusionpbx && php /var/www/fusionpbx/core/upgrade/upgrade_domains.php
+	sed -i /etc/freeswitch/vars/xml -e 's#<X-PRE-PROCESS cmd="set" data=dsn.*##g'
+	echo '<X-PRE-PROCESS cmd="set" data="dsn=pgsql://dbname=freeswitch host=127.0.0.1 port=26257 user=fusionpbx password=${dbpass} sslmode=verify-ca sslrootcert=/etc/fusionpbx/ca.crt" />' >> /etc/freeswitch/vars.xml
+	exec_sql "update v_sip_profile_settings set sip_profile_setting_enabled='true', where sip_profile_setting_name = 'odbc-dsn';"
+
 else
 	warning "You will need to copy the text in between the ------------ markers into the file /root/.ssh/authorized_keys on server ${fusion_host[0]}"
 	echo
@@ -106,11 +141,5 @@ else
 	warning "------------"
 	echo "When you have added this text to the file /root/.ssh/authorized_keys on server ${fusion_host[0]}, press Enter to continue"
 	read placeholder
-fi
-
-
-if [ .$servernum = .'1' ]; then
-	
-else
-
+	ssh root@${fusion_host[0]} echo
 fi

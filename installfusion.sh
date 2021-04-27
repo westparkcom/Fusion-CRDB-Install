@@ -54,9 +54,34 @@ apt update
 apt dist-upgrade
 
 # Install base dependencies
-apt install -y wget systemd systemd-sysv ca-certificates dialog nano net-tools snmpd python3 python3-pip python python-pip iptables-persistent sngrep vim git dbus haveged ssl-cert qrencode ghostscript libtiff5-dev libtiff-tools at zip unzip ffmpeg lua5.2 liblua5.2-dev luarocks libpq-dev cifs-utils curl gnupg2 nginx php${php_ver} php${php_ver}-cli php${php_ver}-fpm php${php_ver}-pgsql php${php_ver}-sqlite3 php${php_ver}-odbc php${php_ver}-curl php${php_ver}-imap php${php_ver}-xml php${php_ver}-gd memcached haveged apt-transport-https lsb-release 
+apt install -y wget systemd systemd-sysv ca-certificates dialog nano net-tools snmpd python3 python3-pip python python-pip sngrep vim git dbus haveged ssl-cert qrencode ghostscript libtiff5-dev libtiff-tools at zip unzip ffmpeg lua5.2 liblua5.2-dev luarocks libpq-dev cifs-utils curl gnupg2 nginx php${php_ver} php${php_ver}-cli php${php_ver}-fpm php${php_ver}-pgsql php${php_ver}-sqlite3 php${php_ver}-odbc php${php_ver}-curl php${php_ver}-imap php${php_ver}-xml php${php_ver}-gd memcached haveged apt-transport-https lsb-release 
 err_check $?
 apt install haproxy=2.2.\* -t buster-backports
+check_err $?
+pip3 install syncthing
+check_err $?
+pip install boto3
+check_err $?
+pip3 install boto3
+check_err $?
+pip install arrow
+check_err $?
+pip3 install arrow
+check_err $?
+pip install PyMySQL
+check_err $?
+pip3 install PyMySQL
+check_err $?
+pip install ffmpy
+check_err $?
+pip3 install ffmpy
+check_err $?
+pip3 install scp
+check_err $?
+pip3 install sshtunnel
+check_err $?
+luarocks install luasql-postgres PGSQL_INCDIR=/usr/include/postgresql
+check_err $?
 
 # SNMP Config
 echo "rocommunity public" > /etc/snmp/snmpd.conf
@@ -93,3 +118,26 @@ err_check_pass $? "Unable to start NTP sync. If you're running in a container th
 
 # Database Setup
 . ./inc/dbsetup.sh
+
+# Install Syncthing
+. ./inc/syncthing.sh
+
+echo ""
+echo ""
+verbose "Installation has completed."
+if [ .$servernum = .'1' ]; then
+	echo ""
+	echo "   Use a web browser to login."
+	echo "      domain name: https://$domain_name"
+	echo "      username: $user_name"
+	echo "      password: $user_password"
+	echo ""
+	echo "   The domain name in the browser is used by default as part of the authentication."
+	echo "   If you need to login to a different domain then use username@domain."
+	echo "      username: $user_name@$domain_name";
+	echo ""
+	warning "PLEASE REBOOT THIS SERVER FOR INSTALLATION TO FULLY COMPLETE!"
+else
+	echo ""
+	warning "AFTER FILE SYNC COMPLETE, PLEASE REBOOT THIS SERVER FOR INSTALLATION TO FULLY COMPLETE!"
+fi

@@ -31,7 +31,9 @@ iptables -A INPUT -p udp --dport 5060:5091 -j ACCEPT
 iptables -A INPUT -p udp --dport 16384:32768 -j ACCEPT
 iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
 iptables -A INPUT -p udp --dport 1194 -j ACCEPT
-iptables -A INPUT -p tcp -m tcp --dport 8041 -j ACCEPT
+if [ .$switch_tls = ."true" ]; then
+	iptables -A INPUT -p tcp -m tcp --dport 8041 -j ACCEPT
+fi
 iptables -t mangle -A OUTPUT -p udp -m udp --sport 16384:32768 -j DSCP --set-dscp 46
 iptables -t mangle -A OUTPUT -p udp -m udp --sport 5060:5091 -j DSCP --set-dscp 26
 iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 5060:5091 -j DSCP --set-dscp 26
@@ -42,3 +44,4 @@ iptables -P OUTPUT ACCEPT
 #answer the questions for iptables persistent
 echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
 echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+apt install -y iptables-persistent
