@@ -56,32 +56,30 @@ apt dist-upgrade
 # Install base dependencies
 apt install -y wget systemd systemd-sysv ca-certificates dialog nano net-tools snmpd python3 python3-pip python python-pip sngrep vim git dbus haveged ssl-cert qrencode ghostscript libtiff5-dev libtiff-tools at zip unzip ffmpeg lua5.2 liblua5.2-dev luarocks libpq-dev cifs-utils curl gnupg2 nginx php${php_ver} php${php_ver}-cli php${php_ver}-fpm php${php_ver}-pgsql php${php_ver}-sqlite3 php${php_ver}-odbc php${php_ver}-curl php${php_ver}-imap php${php_ver}-xml php${php_ver}-gd memcached haveged apt-transport-https lsb-release postgresql-client
 err_check $?
-apt install haproxy=2.2.\* -t buster-backports
-check_err $?
-pip3 install syncthing
-check_err $?
+apt install -y haproxy=2.2.\* -t buster-backports
+err_check $?
 pip install boto3
-check_err $?
+err_check $?
 pip3 install boto3
-check_err $?
+err_check $?
 pip install arrow
-check_err $?
+err_check $?
 pip3 install arrow
-check_err $?
+err_check $?
 pip install PyMySQL
-check_err $?
+err_check $?
 pip3 install PyMySQL
-check_err $?
+err_check $?
 pip install ffmpy
-check_err $?
+err_check $?
 pip3 install ffmpy
-check_err $?
+err_check $?
 pip3 install scp
-check_err $?
+err_check $?
 pip3 install sshtunnel
-check_err $?
+err_check $?
 luarocks install luasql-postgres PGSQL_INCDIR=/usr/include/postgresql
-check_err $?
+err_check $?
 
 # SNMP Config
 echo "rocommunity public" > /etc/snmp/snmpd.conf
