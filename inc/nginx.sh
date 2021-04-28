@@ -9,7 +9,7 @@ sed -i /etc/nginx/sites-available/fusionpbx -e 's#unix:.*;#unix:/var/run/php/${p
 nginx_cert=/etc/ssl/certs/ssl-cert-snakeoil.pem
 nginx_key=/etc/ssl/private/ssl-cert-snakeoil.key
 
-if [ -v ${www_cert} ]; then
+if [ .${www_cert} != ."" ]; then
 
 	cat ${www_cert} ${www_chain} > ${nginx_cert}
 	err_check $?
@@ -17,6 +17,7 @@ if [ -v ${www_cert} ]; then
 	err_check $?
 	chmod 0600 ${nginx_key}
 else
+	make-ssl-cert generate-default-snakeoil
 	ln -s ${nginx_key} /etc/ssl/private/nginx.key
 	ln -s ${nginx_cert} /etc/ssl/certs/nginx.crt
 fi
