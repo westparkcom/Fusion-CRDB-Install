@@ -42,6 +42,9 @@ echo "fs.inotify.max_user_watches=204800" | tee -a /etc/sysctl.conf
 echo 204800 > /proc/sys/fs/inotify/max_user_watches
 systemctl start syncthing
 err_check $?
-
+verbose "Giving syncthing time to initialize..."
+sleep 10
 python3 ./inc/syncsetup.py ${servernum} ${fusion_host[0]}
+verbose "Waiting 1 minute for file sync"
+sleep 60
 err_check $?
