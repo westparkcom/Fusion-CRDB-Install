@@ -50,14 +50,14 @@ Environment="USER=www-data"
 Environment="GROUP=www-data"
 EnvironmentFile=-/etc/default/freeswitch
 ExecStartPre=/bin/mkdir -p /var/run/freeswitch
-ExecStartPre=/bin/chown -R ${USER}:${GROUP} /var/lib/freeswitch /var/log/freeswitch /etc/freeswitch /var/run/freeswitch /usr/share/freeswitch/conf /usr/share/freeswitch/fonts /usr/share/freeswitch/grammar /usr/share/freeswitch/htdocs /usr/share/freeswitch/lang /usr/share/freeswitch/scripts /usr/share/freeswitch/tz
+ExecStartPre=/bin/chown \${USER}:\${GROUP} /var/log/freeswitch /var/run/freeswitch /usr/share/freeswitch /etc/freeswitch /var/cache/fusionpbx
 ExecStartPre=/bin/sleep 10
-ExecStart=/usr/bin/freeswitch -u ${USER} -g ${GROUP} -ncwait ${DAEMON_OPTS}
+ExecStart=/usr/bin/freeswitch -u \${USER} -g \${GROUP} -ncwait \${DAEMON_OPTS}
 TimeoutSec=45s
 Restart=always
 ; exec
-;User=${USER}
-;Group=${GROUP}
+;User=\${USER}
+;Group=\${GROUP}
 LimitCORE=infinity
 LimitNOFILE=100000
 LimitNPROC=60000
@@ -89,7 +89,7 @@ NoNewPrivileges=false
 ; add these lines to give real-time priority to the process:
 ;
 ; PermissionsStartOnly=true
-; ExecStartPost=/bin/chrt -f -p 1 $MAINPID
+; ExecStartPost=/bin/chrt -f -p 1 \$MAINPID
 ;
 ; execute "systemctl daemon-reload" after editing the unit files.
 
@@ -125,3 +125,4 @@ chown -R www-data:www-data /var/cache/fusionpbx
 systemctl enable freeswitch
 systemctl unmask freeswitch.service
 systemctl daemon-reload
+
