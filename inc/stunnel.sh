@@ -3,13 +3,16 @@
 if [ .$switch_tls = .'true' ]; then
 	verbose "Switch TLS enabled, setting up stunnel4"
 	apt install -y stunnel4
+	cp ${switch_cert} /etc/ssl/certs/stunnel.crt
+	cp ${switch_key} /etc/ssl/private/stunnel.key
+	cp ${switch_chain} /etc/ssl/certs/stunnel-ca.crt
 	echo "options = -NO_SSLv2" > /etc/stunnel/stunnel.conf
 	echo "options = -NO_SSLv3" >> /etc/stunnel/stunnel.conf
 	echo "options = -NO_TLSv1" >> /etc/stunnel/stunnel.conf
 	echo "options = -NO_TLSv1.1" >> /etc/stunnel/stunnel.conf
-	echo "cert = ${switch_cert}" >> /etc/stunnel/stunnel.conf
-	echo "key = ${switch_key}" >> /etc/stunnel/stunnel.conf
-	echo "CAfile = ${switch_chain}" >> /etc/stunnel/stunnel.conf
+	echo "cert = /etc/ssl/certs/stunnel.crt" >> /etc/stunnel/stunnel.conf
+	echo "key = /etc/ssl/private/stunnel.key" >> /etc/stunnel/stunnel.conf
+	echo "CAfile = /etc/ssl/certs/stunnel-ca.crt" >> /etc/stunnel/stunnel.conf
 	echo "" >> /etc/stunnel/stunnel.conf
 	echo "[esls]" >> /etc/stunnel/stunnel.conf
 	echo "accept = 8041" >> /etc/stunnel/stunnel.conf

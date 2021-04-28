@@ -68,6 +68,8 @@ if [ .$servernum = .'1' ]; then
 	warning "------------"
 	cat /root/.ssh/id_rsa.pub
 	warning "------------"
+	echo "When you have added this text to the file /root/.ssh/authorized_keys on server ${db_host[0]}, press Enter to continue"
+	read placeholder
 	verbose "Adding database users"
 	warning "If you asked if you want to continue connecting, enter yes and press enter"
 	exec_sql "CREATE USER fusionpbx WITH LOGIN PASSWORD ${dbpass};"
@@ -143,3 +145,9 @@ else
 	read placeholder
 	ssh root@${fusion_host[0]} echo
 fi
+
+# Install maintenance script
+cp ./backup/fusionpbx-maintenance /etc/cron.daily
+chmod 755 /etc/cron.daily/fusionpbx-maintenance
+sed -i "s/zzz/${dbpass}/g" /etc/cron.daily/fusionpbx-maintenance
+sed -i "s/nnn/${servernum}/g" /etc/cron.daily/fusionpbx-maintenance
