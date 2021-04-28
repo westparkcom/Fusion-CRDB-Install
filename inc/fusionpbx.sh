@@ -6,9 +6,11 @@ verbose "Installing FusionPBX"
 mkdir -p /var/cache/fusionpbx
 chown -R www-data:www-data /var/cache/fusionpbx
 
+if [ .$servernum = .'1' ]; then
 #get the source code
-git clone https://github.com/westparkcom/fusionpbx-wpc.git /var/www/fusionpbx
-chown -R www-data:www-data /var/www/fusionpbx
+	git clone https://github.com/westparkcom/fusionpbx-wpc.git /var/www/fusionpbx
+	chown -R www-data:www-data /var/www/fusionpbx
+fi
 
 if [ -v ${aws_access_key} ]; then
 	cat /usr/local/lib/python2.7/dist-packages/fsglobs.py <<-EOM
