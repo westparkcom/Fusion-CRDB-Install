@@ -66,8 +66,6 @@ pip install arrow
 err_check $?
 pip3 install arrow
 err_check $?
-pip install PyMySQL
-err_check $?
 pip3 install PyMySQL
 err_check $?
 pip install ffmpy
