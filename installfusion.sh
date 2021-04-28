@@ -37,7 +37,7 @@ if [ .$servernum = .'1' ]; then
 		exit 0
 	fi
 elif [ .$servernum = .'2' ]; then
-	
+	verbose "Additional server selected"
 else
 	error "Bad entry, please select 1 or 2."
 	exit 3
