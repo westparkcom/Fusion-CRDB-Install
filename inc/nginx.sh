@@ -3,7 +3,7 @@
 verbose "Installing nginx web server"
 
 cp ./nginx/fusionpbx /etc/nginx/sites-available/fusionpbx
-sed -i /etc/nginx/sites-available/fusionpbx -e 's#unix:.*;#unix:/var/run/php/${php_ver}-fpm.sock;#g'
+sed -i /etc/nginx/sites-available/fusionpbx -e "s#unix:.*;#unix:/var/run/php/${php_ver}-fpm.sock;#g"
 
 #self signed certificate
 nginx_cert=/etc/ssl/certs/ssl-cert-snakeoil.pem
