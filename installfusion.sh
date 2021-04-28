@@ -1,6 +1,6 @@
 #!/bin/bash
 
-installtype = 'fusion'
+installtype='fusion'
 # Color displays
 . ./inc/colors.sh
 
