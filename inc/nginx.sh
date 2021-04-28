@@ -32,3 +32,4 @@ systemctl daemon-reload
 
 #restart nginx
 systemctl restart nginx
+err_check $?
