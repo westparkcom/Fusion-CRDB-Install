@@ -17,7 +17,7 @@ if [ .${www_cert} != ."" ]; then
 	err_check $?
 	chmod 0600 ${nginx_key}
 else
-	make-ssl-cert generate-default-snakeoil
+	make-ssl-cert generate-default-snakeoil --force-overwrite
 	ln -s ${nginx_key} /etc/ssl/private/nginx.key
 	ln -s ${nginx_cert} /etc/ssl/certs/nginx.crt
 fi
