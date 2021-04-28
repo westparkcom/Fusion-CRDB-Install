@@ -52,7 +52,7 @@ Environment="USER=www-data"
 Environment="GROUP=www-data"
 EnvironmentFile=-/etc/default/freeswitch
 ExecStartPre=/bin/mkdir -p /var/run/freeswitch
-ExecStartPre=/bin/chown \${USER}:\${GROUP} /var/log/freeswitch /var/run/freeswitch /usr/share/freeswitch /etc/freeswitch /var/cache/fusionpbx
+ExecStartPre=/bin/chown -R \${USER}:\${GROUP} /var/log/freeswitch /var/run/freeswitch /usr/share/freeswitch /etc/freeswitch /var/cache/fusionpbx /var/lib/freeswitch/
 ExecStartPre=/bin/sleep 10
 ExecStart=/usr/bin/freeswitch -u \${USER} -g \${GROUP} -ncwait \${DAEMON_OPTS}
 TimeoutSec=45s
@@ -124,7 +124,8 @@ chown -R www-data:www-data /var/log/freeswitch
 chown -R www-data:www-data /var/run/freeswitch
 chown -R www-data:www-data /var/cache/fusionpbx
 
-systemctl enable freeswitch
+systemctl daemon-reload
 systemctl unmask freeswitch.service
+systemctl enable freeswitch
 systemctl daemon-reload
 
