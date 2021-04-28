@@ -28,10 +28,10 @@ fusion_ntp_servers=10.10.10.5 10.10.10.6
 #switch_key=/path/to/key.key
 
 # FreeSWITCH Text To Speech. UNCOMMENT ALL SETTINGS!
-#aws_access_key='INSERT_YOUR_KEY_HERE'
-#aws_secret_key='INSERT_YOUR_SECRET_HERE'
-#aws_region_name='us-east-1'
-#aws_default_voice='Joanna'
+#aws_access_key=INSERT_YOUR_KEY_HERE
+#aws_secret_key=INSERT_YOUR_SECRET_HERE
+#aws_region_name=us-east-1
+#aws_default_voice=Joanna
 
 ## Settings if this is a first time installation
 ### One of: hostname, ip_address or a custom value
