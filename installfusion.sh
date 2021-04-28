@@ -121,7 +121,7 @@ err_check_pass $? "Unable to start NTP sync. If you're running in a container th
 # Install Syncthing
 . ./inc/syncthing.sh
 
-if [ -v ${aws_access_key} ]; then
+if [ .${aws_access_key} != ."" ]; then
 	cat < /usr/local/lib/python2.7/dist-packages/fsglobs.py <<-EOM
 class G:
 	aws_access_key = '${aws_access_key}'
