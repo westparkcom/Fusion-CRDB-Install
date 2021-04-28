@@ -1,5 +1,10 @@
 #!/bin/bash
 
+exec_sql_pre () {
+	ssh root@${db_host[0]} 'cockroach sql --execute="${1}" --certs-dir=/usr/local/cockroach/certs'
+	err_check $?
+}
+
 exec_sql () {
 	ssh root@${db_host[0]} 'cockroach sql --execute="use fusionpbx;${1}" --certs-dir=/usr/local/cockroach/certs'
 	err_check $?
@@ -72,13 +77,13 @@ if [ .$servernum = .'1' ]; then
 	read placeholder
 	verbose "Adding database users"
 	warning "If you asked if you want to continue connecting, enter yes and press enter"
-	exec_sql "CREATE USER fusionpbx WITH LOGIN PASSWORD ${dbpass};"
-	exec_sql "CREATE USER freeswitch WITH LOGIN PASSWORD ${dbpass};"
-	exec_sql "CREATE DATABASE freeswitch;"
-	exec_sql "CREATE DATABASE fusionpbx;"
-	exec_sql "GRANT ALL PRIVILEGES ON DATABASE fusionpbx to fusionpbx;"
-	exec_sql "GRANT ALL PRIVILEGES ON DATABASE freeswitch to fusionpbx;"
-	exec_sql "GRANT ALL PRIVILEGES ON DATABASE freeswitch to freeswitch;"
+	exec_sql_pre "CREATE USER fusionpbx WITH LOGIN PASSWORD ${dbpass};"
+	exec_sql_pre "CREATE USER freeswitch WITH LOGIN PASSWORD ${dbpass};"
+	exec_sql_pre "CREATE DATABASE freeswitch;"
+	exec_sql_pre "CREATE DATABASE fusionpbx;"
+	exec_sql_pre "GRANT ALL PRIVILEGES ON DATABASE fusionpbx to fusionpbx;"
+	exec_sql_pre "GRANT ALL PRIVILEGES ON DATABASE freeswitch to fusionpbx;"
+	exec_sql_pre "GRANT ALL PRIVILEGES ON DATABASE freeswitch to freeswitch;"
 	scp root@${db_host[0]}:/usr/local/cockroach/certs/ca.crt /etc/fusionpbx
 	err_check $?
 	cp ./fusionpbx/config.php /etc/fusionpbx
