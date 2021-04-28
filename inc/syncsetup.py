@@ -175,12 +175,12 @@ def setupFolders(devid, remdevid, folders, devices, remfolders=None):
 	
 	for key, value in G.locations.items():
 		if not os.path.isdir(value):
-			os.mkdir(value, 0755)
+			os.mkdir(value)
 			os.chown(value, uid, gid)
 		else:
 			if sys.argv[1] != '1':
 				shutil.rmtree(value)
-				os.mkdir(value, 0755)
+				os.mkdir(value)
 				os.chown(value, uid, gid)
 			for dirpath, dirnames, filenames in os.walk(value):
 				os.chown(dirpath, uid, gid)

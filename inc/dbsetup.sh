@@ -1,12 +1,12 @@
 #!/bin/bash
 
 exec_sql_pre () {
-	ssh root@${db_host[0]} 'cockroach sql --execute="${1}" --certs-dir=/usr/local/cockroach/certs'
+	ssh root@${db_host[0]} "cockroach sql --execute=\"${1}\" --certs-dir=/usr/local/cockroach/certs"
 	err_check $?
 }
 
 exec_sql () {
-	ssh root@${db_host[0]} 'cockroach sql --execute="use fusionpbx;${1}" --certs-dir=/usr/local/cockroach/certs'
+	ssh root@${db_host[0]} "cockroach sql --execute=\"use fusionpbx;${1}\" --certs-dir=/usr/local/cockroach/certs"
 	err_check $?
 }
 
@@ -68,6 +68,7 @@ ssh-keygen -t rsa -b 4096 -C "${iplist[0]}" -f /root/.ssh/id_rsa
 err_check $?
 
 if [ .$servernum = .'1' ]; then
+	curdir=$(pwd)
 	warning "You will need to copy the text in between the ------------ markers into the file /root/.ssh/authorized_keys on server ${db_host[0]}"
 	echo
 	warning "------------"
@@ -77,23 +78,23 @@ if [ .$servernum = .'1' ]; then
 	read placeholder
 	verbose "Adding database users"
 	warning "If you asked if you want to continue connecting, enter yes and press enter"
-	exec_sql_pre "CREATE USER fusionpbx WITH LOGIN PASSWORD ${dbpass};"
-	exec_sql_pre "CREATE USER freeswitch WITH LOGIN PASSWORD ${dbpass};"
+	exec_sql_pre "CREATE USER fusionpbx WITH LOGIN PASSWORD '${dbpass}';"
+	exec_sql_pre "CREATE USER freeswitch WITH LOGIN PASSWORD '${dbpass}';"
 	exec_sql_pre "CREATE DATABASE freeswitch;"
 	exec_sql_pre "CREATE DATABASE fusionpbx;"
-	exec_sql_pre "GRANT ALL PRIVILEGES ON DATABASE fusionpbx to fusionpbx;"
-	exec_sql_pre "GRANT ALL PRIVILEGES ON DATABASE freeswitch to fusionpbx;"
-	exec_sql_pre "GRANT ALL PRIVILEGES ON DATABASE freeswitch to freeswitch;"
+	exec_sql_pre "GRANT ALL ON DATABASE fusionpbx to fusionpbx;"
+	exec_sql_pre "GRANT ALL ON DATABASE freeswitch to fusionpbx;"
+	exec_sql_pre "GRANT ALL ON DATABASE freeswitch to freeswitch;"
 	scp root@${db_host[0]}:/usr/local/cockroach/certs/ca.crt /etc/fusionpbx
 	err_check $?
 	cp ./fusionpbx/config.php /etc/fusionpbx
 	err_check $?
-	sed -i /etc/fusionpbx/config.php -e s:"{database_host}:127\.0\.0\.1:"
-	sed -i /etc/fusionpbx/config.php -e s:'{database_username}:fusionpbx:'
-	sed -i /etc/fusionpbx/config.php -e s:"{database_password}:$dbpass"
-	sed -i /etc/fusionpbx/config.php -e s:"{database_port}:$db_port:"
+	sed -i /etc/fusionpbx/config.php -e "s:{database_host}:127\.0\.0\.1:"
+	sed -i /etc/fusionpbx/config.php -e "s:{database_username}:fusionpbx:"
+	sed -i /etc/fusionpbx/config.php -e "s:{database_password}:$dbpass:"
+	sed -i /etc/fusionpbx/config.php -e "s:{database_port}:$db_port:"
 	
-	verbose "Initializing FusionPBX database"
+	verbose "Initializing FusionPBX database. This may take a while."
 	curdir=`pwd`
 	#get the server hostname
 	if [ .$domain_name = .'hostname' ]; then
@@ -136,10 +137,10 @@ if [ .$servernum = .'1' ]; then
 context_type = 'single';
 EOM
 	cd /var/www/fusionpbx && php /var/www/fusionpbx/core/upgrade/upgrade_domains.php
-	sed -i /etc/freeswitch/vars/xml -e 's#<X-PRE-PROCESS cmd="set" data=dsn.*##g'
+	sed -i /etc/freeswitch/vars.xml -e 's#<X-PRE-PROCESS cmd="set" data=dsn.*##g'
 	echo '<X-PRE-PROCESS cmd="set" data="dsn=pgsql://dbname=freeswitch host=127.0.0.1 port=26257 user=fusionpbx password=${dbpass} sslmode=verify-ca sslrootcert=/etc/fusionpbx/ca.crt" />' >> /etc/freeswitch/vars.xml
-	exec_sql "update v_sip_profile_settings set sip_profile_setting_enabled='true', where sip_profile_setting_name = 'odbc-dsn';"
-
+	exec_sql "update v_sip_profile_settings set sip_profile_setting_enabled='true' where sip_profile_setting_name = 'odbc-dsn';"
+	cd ${curdir}
 else
 	warning "You will need to copy the text in between the ------------ markers into the file /root/.ssh/authorized_keys on server ${fusion_host[0]}"
 	echo

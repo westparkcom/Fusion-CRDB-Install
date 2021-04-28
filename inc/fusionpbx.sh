@@ -10,6 +10,9 @@ if [ .$servernum = .'1' ]; then
 #get the source code
 	git clone https://github.com/westparkcom/fusionpbx-wpc.git /var/www/fusionpbx
 	chown -R www-data:www-data /var/www/fusionpbx
+else
+	mkdir /var/www/fusionpbx
+	chown -R www-data:www-data /var/www/fusionpbx
 fi
 
 if [ -v ${aws_access_key} ]; then
@@ -22,6 +25,6 @@ class G:
 	tts_default_voice = '${aws_default_voice}'
 	tmp_location = '/tmp'
 EOM
-	cp /var/www/fusionpbx/resources/install/python/streamtext.py /usr/local/lib/python2.7/dist-packages
-	cp -r /var/www/fusionpbx/resources/install/python/polly /usr/local/lib/python2.7/dist-packages
 fi
+cp /var/www/fusionpbx/resources/install/python/streamtext.py /usr/local/lib/python2.7/dist-packages
+cp -r /var/www/fusionpbx/resources/install/python/polly /usr/local/lib/python2.7/dist-packages
