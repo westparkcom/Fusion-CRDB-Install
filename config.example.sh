@@ -49,8 +49,8 @@ check_port=8080
 
 # CRDB Settings
 ## Download URL, will need to be updated as time goes on
-crdb_version=cockroach-v20.2.7.linux-amd64
-crdb_url=https://binaries.cockroachdb.com/cockroach-v20.2.7.linux-amd64.tgz
+crdb_version=cockroach-v21.1.7.linux-amd64
+crdb_url=https://binaries.cockroachdb.com/cockroach-v21.1.7.linux-amd64.tgz
 crdb_locality=region=us-central,zone=bcs
 ## We need NTP servers for Cockroach to maintain synchronization
 crdb_ntp_servers=10.10.10.5 10.10.10.6
