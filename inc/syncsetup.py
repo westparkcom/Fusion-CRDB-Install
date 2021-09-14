@@ -12,15 +12,13 @@ import os
 import shutil
 import pwd, grp
 import glob
+from pathlib import Path
 
 class G:
 	xmlloc = "/var/www/.config/syncthing/config.xml"
 	locations = {
 		'acd-daemon-config': '/etc/acd',
-		'cache': '/var/cache/fusionpbx',
 		'freeswitch': '/etc/freeswitch',
-		'fusionpbx': '/var/www/fusionpbx',
-		'fusionpbx-etc': '/etc/fusionpbx',
 		'localetc': '/usr/local/etc',
 		'music': '/usr/share/freeswitch/sounds/music',
 		'recordings': '/var/lib/freeswitch/recordings',
@@ -28,8 +26,16 @@ class G:
 		'storage': '/var/lib/freeswitch/storage'
 	}
 	syncapiport = 8384
-	username = 'www-data'
-	groupname = 'www-data'
+	username = 'freeswitch'
+	groupname = 'freeswitch'
+
+if Path ( '/etc/fusionpbx' ).is_dir():
+	G.locations.update ( {
+		'cache': '/var/cache/fusionpbx',
+		'fusionpbx': '/var/www/fusionpbx',
+		'fusionpbx-etc': '/etc/fusionpbx',
+	} )
+	G.username = G.groupname = 'www-data'
 
 class Syncthing():
 
