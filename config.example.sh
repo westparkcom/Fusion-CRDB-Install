@@ -12,7 +12,7 @@ fusion_host[0]=10.10.10.60
 fusion_host[1]=10.10.10.61
 fusion_host[2]=10.10.10.60
 fusion_host[3]=10.10.10.60
-fusion_ntp_servers=10.10.10.5 10.10.10.6
+fusion_ntp_servers="10.10.10.5 10.10.10.6"
 
 # Webserver certificate override. Certificate will be copied to /etc/ssl/certs, key will copied to /etc/ssl/private
 #www_cert=/path/to/cert.crt
@@ -53,4 +53,4 @@ crdb_version=cockroach-v21.1.7.linux-amd64
 crdb_url=https://binaries.cockroachdb.com/cockroach-v21.1.7.linux-amd64.tgz
 crdb_locality=region=us-central,zone=bcs
 ## We need NTP servers for Cockroach to maintain synchronization
-crdb_ntp_servers=10.10.10.5 10.10.10.6
+crdb_ntp_servers="10.10.10.5 10.10.10.6"
