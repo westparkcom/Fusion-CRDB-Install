@@ -15,7 +15,7 @@ import glob
 from pathlib import Path
 
 class G:
-	xmlloc = "/var/www/.config/syncthing/config.xml"
+	xmlloc = "/var/lib/freeswitch/.config/syncthing/config.xml"
 	locations = {
 		'acd-daemon-config': '/etc/acd',
 		'freeswitch': '/etc/freeswitch',
@@ -36,6 +36,7 @@ if Path ( '/etc/fusionpbx' ).is_dir():
 		'fusionpbx-etc': '/etc/fusionpbx',
 	} )
 	G.username = G.groupname = 'www-data'
+	G.xmlloc = "/var/www/.config/syncthing/config.xml"
 
 class Syncthing():
 
