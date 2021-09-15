@@ -44,12 +44,12 @@ fi
 if [ .$installtype = .'fusion' ]; then
 	# Installing FusionPBX, only Debian 10 supported
 	if [ .$os_name = .'Debian' ]; then
-		if [ .$os_codename = .'buster' ]; then
+		if [ .$os_codename = .'buster' ] || [ .$os_codename = .'bullseye' ]; then
 			verbose "${os_name} ${os_codename} detected, continuing!"
 			php_ver=7.3
 			php_lib=20180731
 		else
-			error "${os_name} ${os_codename} detected, please use Debian buster x86_64!"
+			error "${os_name} ${os_codename} detected, please use Debian buster or bullseye x86_64!"
 			exit 3
 		fi
 	else
@@ -59,10 +59,10 @@ if [ .$installtype = .'fusion' ]; then
 else
 	#Installing Cockroach DB, Debian or Ubuntu is usable
 	if [ .$os_name = .'Debian' ]; then
-		if [ .$os_codename = .'buster' ]; then
+		if [ .$os_codename = .'buster' ] || [ .$os_codename = .'bullseye' ]; then
 			verbose "${os_name} ${os_codename} detected, continuing!"
 		else
-			error "${os_name} ${os_codename} detected, please use Debian buster x86_64 or Ubuntu focal x86_64!"
+			error "${os_name} ${os_codename} detected, please use Debian buster/bullseye x86_64 or Ubuntu focal x86_64!"
 			exit 3
 		fi
 	elif [ .$os_name = .'Ubuntu' ]; then
