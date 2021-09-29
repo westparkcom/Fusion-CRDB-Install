@@ -33,6 +33,8 @@ iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
 iptables -A INPUT -p udp --dport 1194 -j ACCEPT
 if [ .$switch_tls = ."true" ]; then
 	iptables -A INPUT -p tcp -m tcp --dport 8041 -j ACCEPT
+else
+	iptables -A INPUT -p tcp -m tcp --dport 8021 -j ACCEPT
 fi
 iptables -t mangle -A OUTPUT -p udp -m udp --sport 16384:32768 -j DSCP --set-dscp 46
 iptables -t mangle -A OUTPUT -p udp -m udp --sport 5060:5091 -j DSCP --set-dscp 26
