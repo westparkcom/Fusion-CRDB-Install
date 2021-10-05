@@ -29,7 +29,7 @@ if [ .$servernum = .'1' ]; then
 fi
 
 
-cat > /etc/defaults/freeswitch <<- EOM
+cat > /etc/default/freeswitch <<- EOM
 # /etc/default/freeswitch
 DAEMON_OPTS="-nonat"
 EOM
