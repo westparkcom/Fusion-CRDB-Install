@@ -24,6 +24,7 @@ iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 iptables -A INPUT -p tcp --dport 7443 -j ACCEPT
 for i in "${fusion_host[@]}"
 do
+	iptables -A INPUT -s ${i}/32 -p tcp -m tcp --dport 8384 -j ACCEPT
 	iptables -A INPUT -s ${i}/32 -p tcp -m tcp --dport 22000 -j ACCEPT
 done
 iptables -A INPUT -p tcp --dport 5060:5091 -j ACCEPT
