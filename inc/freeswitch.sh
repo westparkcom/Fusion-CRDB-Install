@@ -2,12 +2,19 @@
 
 verbose "Installing FreeSWITCH"
 
-wget -O - https://files.freeswitch.org/repo/deb/debian-release/fsstretch-archive-keyring.asc | apt-key add -
-echo "deb http://files.freeswitch.org/repo/deb/debian-release/ `lsb_release -sc` main" > /etc/apt/sources.list.d/freeswitch.list
-echo "deb-src http://files.freeswitch.org/repo/deb/debian-release/ `lsb_release -sc` main" >> /etc/apt/sources.list.d/freeswitch.list
+warning "!!!!!!!!!!!!!!!!STOP!!!!!!!!!!!!!!!!!!!"
+warning "You must now enter your personal access token from Signalwire in order to install freeswitch. Please read https://freeswitch.org/confluence/display/FREESWITCH/HOWTO+Create+a+SignalWire+Personal+Access+Token to learn how to create one"
+echo "When you have created your token, please paste it here and press Enter to continue"
+read token
+
+wget --http-user=signalwire --http-password=${token} -O /usr/share/keyrings/signalwire-freeswitch-repo.gpg https://freeswitch.signalwire.com/repo/deb/debian-release/signalwire-freeswitch-repo.gpg
+err_check $?
+echo "machine freeswitch.signalwire.com login signalwire password ${token}" > /etc/apt/auth.conf
+echo "deb [signed-by=/usr/share/keyrings/signalwire-freeswitch-repo.gpg] https://freeswitch.signalwire.com/repo/deb/debian-release/ `lsb_release -sc` main" > /etc/apt/sources.list.d/freeswitch.list
+echo "deb-src [signed-by=/usr/share/keyrings/signalwire-freeswitch-repo.gpg] https://freeswitch.signalwire.com/repo/deb/debian-release/ `lsb_release -sc` main" >> /etc/apt/sources.list.d/freeswitch.list
 
 apt update
-apt install -y gdb freeswitch-meta-bare freeswitch-conf-vanilla freeswitch-mod-commands freeswitch-mod-console freeswitch-mod-logfile freeswitch-lang-en freeswitch-mod-python freeswitch-mod-say-en freeswitch-sounds-en-us-callie freeswitch-mod-enum freeswitch-mod-cdr-csv freeswitch-mod-event-socket freeswitch-mod-sofia freeswitch-mod-sofia-dbg freeswitch-mod-loopback freeswitch-mod-conference freeswitch-mod-db freeswitch-mod-dptools freeswitch-mod-expr freeswitch-mod-fifo freeswitch-mod-httapi freeswitch-mod-hash freeswitch-mod-esl freeswitch-mod-esf freeswitch-mod-fsv freeswitch-mod-valet-parking freeswitch-mod-dialplan-xml freeswitch-dbg freeswitch-mod-sndfile freeswitch-mod-native-file freeswitch-mod-local-stream freeswitch-mod-tone-stream freeswitch-mod-lua freeswitch-meta-mod-say freeswitch-mod-xml-cdr freeswitch-mod-verto freeswitch-mod-callcenter freeswitch-mod-rtc freeswitch-mod-png freeswitch-mod-json-cdr freeswitch-mod-shout freeswitch-mod-sms freeswitch-mod-sms-dbg freeswitch-mod-cidlookup freeswitch-mod-memcache freeswitch-mod-imagick freeswitch-mod-tts-commandline freeswitch-mod-directory freeswitch-mod-flite freeswitch-mod-distributor freeswitch-meta-codecs freeswitch-mod-pgsql
+apt install -y gdb freeswitch-meta-bare freeswitch-conf-vanilla freeswitch-mod-commands freeswitch-mod-console freeswitch-mod-logfile freeswitch-lang-en freeswitch-mod-python3 freeswitch-mod-say-en freeswitch-sounds-en-us-callie freeswitch-mod-enum freeswitch-mod-cdr-csv freeswitch-mod-event-socket freeswitch-mod-sofia freeswitch-mod-sofia-dbg freeswitch-mod-loopback freeswitch-mod-conference freeswitch-mod-db freeswitch-mod-dptools freeswitch-mod-expr freeswitch-mod-fifo freeswitch-mod-httapi freeswitch-mod-hash freeswitch-mod-esl freeswitch-mod-esf freeswitch-mod-fsv freeswitch-mod-valet-parking freeswitch-mod-dialplan-xml freeswitch-dbg freeswitch-mod-sndfile freeswitch-mod-native-file freeswitch-mod-local-stream freeswitch-mod-tone-stream freeswitch-mod-lua freeswitch-meta-mod-say freeswitch-mod-xml-cdr freeswitch-mod-verto freeswitch-mod-callcenter freeswitch-mod-rtc freeswitch-mod-png freeswitch-mod-json-cdr freeswitch-mod-shout freeswitch-mod-sms freeswitch-mod-sms-dbg freeswitch-mod-cidlookup freeswitch-mod-memcache freeswitch-mod-imagick freeswitch-mod-tts-commandline freeswitch-mod-directory freeswitch-mod-flite freeswitch-mod-distributor freeswitch-meta-codecs freeswitch-mod-pgsql
 err_check $?
 
 systemctl stop freeswitch
@@ -15,7 +22,8 @@ apt remove -y freeswitch-systemd
 
 if [ .$servernum = .'1' ]; then
 	# Enable mod_python
-	sed -i /etc/freeswitch/autoload_configs/modules.conf.xml -e s:'<\!-- <load module="mod_python"/> -->:<load module="mod_python"/>:'
+	sed -i /etc/freeswitch/autoload_configs/modules.conf.xml -e s:'<\!-- <load module="mod_python"/> -->:<load module="mod_python3"/>:'
+	sed -i /etc/freeswitch/autoload_configs/modules.conf.xml -e s:'<\!-- <load module="mod_python3"/> -->:<load module="mod_python3"/>:'
 	# First server, initialize music on hold
 	apt install -y freeswitch-music-default
 	#remove the music package to protect music on hold from package updates
