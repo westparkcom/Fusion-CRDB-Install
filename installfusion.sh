@@ -47,34 +47,36 @@ fi
 sed -i '/cdrom:/d' /etc/apt/sources.list
 
 # Enable backports
-echo deb http://deb.debian.org/debian buster-backports main > /etc/apt/sources.list.d/backports.list
+if [ .$os_codename = .'buster' ]; then
+	echo deb http://deb.debian.org/debian buster-backports main > /etc/apt/sources.list.d/backports.list
+fi
 
 # Update the system prior to installation
 apt update
 apt dist-upgrade
 
 # Install base dependencies
-apt install -y wget systemd systemd-sysv ca-certificates dialog nano net-tools snmpd python3 python3-pip python python-pip sngrep vim git dbus haveged ssl-cert qrencode ghostscript libtiff5-dev libtiff-tools at zip unzip ffmpeg lua5.2 liblua5.2-dev luarocks libpq-dev cifs-utils curl gnupg2 nginx php${php_ver} php${php_ver}-cli php${php_ver}-fpm php${php_ver}-pgsql php${php_ver}-sqlite3 php${php_ver}-odbc php${php_ver}-curl php${php_ver}-imap php${php_ver}-xml php${php_ver}-gd memcached haveged apt-transport-https lsb-release postgresql-client
+apt install -y wget systemd systemd-sysv ca-certificates dialog nano net-tools snmpd python3 python3-pip python python-pip sngrep vim git dbus haveged ssl-cert qrencode ghostscript libtiff5-dev libtiff-tools at zip unzip ffmpeg lua5.2 liblua5.2-dev luarocks libpq-dev cifs-utils curl gnupg2 nginx php${php_ver} php${php_ver}-cli php${php_ver}-fpm php${php_ver}-pgsql php${php_ver}-sqlite3 php${php_ver}-odbc php${php_ver}-curl php${php_ver}-imap php${php_ver}-xml php${php_ver}-gd memcached haveged apt-transport-https lsb-release postgresql-client gnupg2
 err_check $?
-apt install -y haproxy=2.2.\* -t buster-backports
-err_check $?
-pip install boto3
+if [ .$os_codename = .'buster' ]; then
+	apt install -y haproxy=2.2.\* -t ${os_codename}-backports
+else
+	apt install -y haproxy=2.2.\*
+fi
 err_check $?
 pip3 install boto3
-err_check $?
-pip install arrow
 err_check $?
 pip3 install arrow
 err_check $?
 pip3 install PyMySQL
-err_check $?
-pip install ffmpy
 err_check $?
 pip3 install ffmpy
 err_check $?
 pip3 install scp
 err_check $?
 pip3 install sshtunnel
+err_check $?
+pip3 install certifi gevent psycopg2 tenacity ws4py
 err_check $?
 luarocks install luasql-postgres PGSQL_INCDIR=/usr/include/postgresql
 err_check $?
@@ -121,8 +123,9 @@ err_check_pass $? "Unable to start NTP sync. If you're running in a container th
 # Install Syncthing
 . ./inc/syncthing.sh
 
-if [ .${aws_access_key} != ."" ]; then
-	cat < /usr/local/lib/python2.7/dist-packages/fsglobs.py <<-EOM
+if [ .$servernum = .'1' ]; then
+	if [ .${aws_access_key} != ."" ]; then
+		cat < /usr/local/lib/python${python_ver}/dist-packages/fsglobs.py <<-EOM
 class G:
 	aws_access_key = '${aws_access_key}'
 	aws_secret_key = '${aws_secret_key}'
@@ -131,9 +134,12 @@ class G:
 	tts_default_voice = '${aws_default_voice}'
 	tmp_location = '/tmp'
 EOM
+	fi
+else
+	scp root@${fusion_host[0]}:/usr/local/lib/python${python_ver}/dist-packages/fsglobs.py /usr/local/lib/python${python_ver}/dist-packages/fsglobs.py
 fi
-cp /var/www/fusionpbx/resources/install/python/streamtext.py /usr/local/lib/python2.7/dist-packages
-cp -r /var/www/fusionpbx/resources/install/python/polly /usr/local/lib/python2.7/dist-packages
+cp /var/www/fusionpbx/resources/install/python/streamtext.py /usr/local/lib/python${python_ver}/dist-packages
+cp -r /var/www/fusionpbx/resources/install/python/polly /usr/local/lib/python${python_ver}/dist-packages
 
 echo ""
 echo ""
