@@ -44,9 +44,15 @@ fi
 if [ .$installtype = .'fusion' ]; then
 	# Installing FusionPBX, only Debian 10 supported
 	if [ .$os_name = .'Debian' ]; then
-		if [ .$os_codename = .'buster' ] || [ .$os_codename = .'bullseye' ]; then
+		if [ .$os_codename = .'buster' ]; then
 			verbose "${os_name} ${os_codename} detected, continuing!"
 			php_ver=7.3
+			python_ver=3.7
+			php_lib=20180731
+		elif [ .$os_codename = .'bullseye' ]; then
+			verbose "${os_name} ${os_codename} detected, continuing!"
+			php_ver=7.3
+			python_ver=3.9
 			php_lib=20180731
 		else
 			error "${os_name} ${os_codename} detected, please use Debian buster or bullseye x86_64!"
