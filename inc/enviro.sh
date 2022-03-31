@@ -48,11 +48,13 @@ if [ .$installtype = .'fusion' ]; then
 			verbose "${os_name} ${os_codename} detected, continuing!"
 			php_ver=7.3
 			python_ver=3.7
+			lua_ver=5.3
 			php_lib=20180731
 		elif [ .$os_codename = .'bullseye' ]; then
 			verbose "${os_name} ${os_codename} detected, continuing!"
 			php_ver=7.4
 			python_ver=3.9
+			lua_ver=5.4
 			php_lib=20180731
 		else
 			error "${os_name} ${os_codename} detected, please use Debian buster or bullseye x86_64!"
