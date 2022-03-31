@@ -34,6 +34,9 @@ if [ .$servernum = .'1' ]; then
 	mkdir -p /usr/share/freeswitch/sounds/music/default
 	mv /usr/share/freeswitch/sounds/temp/* /usr/share/freeswitch/sounds/music/default
 	rm -R /usr/share/freeswitch/sounds/temp
+else
+	# Clean up /etc/freeswitch so that there aren't any conflicts
+	rm -rf /etc/freeswitch/*
 fi
 
 
