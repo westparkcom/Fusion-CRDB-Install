@@ -126,6 +126,7 @@ if [ -v ${switch_tls} ]; then
 		${switch_cert} ${switch_key} ${switch_chain} > /etc/freeswitch/tls/dtls-srtp.pem
 		sed -i /etc/freeswitch/vars.xml -e 's#external_ssl_enable=false#external_ssl_enable=true#g'
 		sed -i /etc/freeswitch/vars.xml -e 's#internal_ssl_enable=false#internal_ssl_enable=true#g'
+	fi
 fi
 
 chown -R www-data:www-data /etc/freeswitch
