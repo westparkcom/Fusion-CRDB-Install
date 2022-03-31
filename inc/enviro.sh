@@ -51,7 +51,7 @@ if [ .$installtype = .'fusion' ]; then
 			php_lib=20180731
 		elif [ .$os_codename = .'bullseye' ]; then
 			verbose "${os_name} ${os_codename} detected, continuing!"
-			php_ver=7.3
+			php_ver=7.4
 			python_ver=3.9
 			php_lib=20180731
 		else
