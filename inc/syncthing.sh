@@ -49,6 +49,6 @@ systemctl stop syncthing
 systemctl start syncthing
 sleep 5
 python3 ./inc/syncsetup.py ${servernum} ${fusion_host[0]}
-verbose "Waiting 1 minute for file sync"
-sleep 60
+verbose "Waiting 5 minutes for file sync"
+sleep 300
 err_check $?
