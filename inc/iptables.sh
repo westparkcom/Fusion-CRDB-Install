@@ -1,4 +1,6 @@
 #!/bin/bash
+verbose "Installing IPTables"
+apt install -y iptables-persistent
 verbose "Adding firewall rules"
 
 #run iptables commands
@@ -47,4 +49,3 @@ iptables -P OUTPUT ACCEPT
 #answer the questions for iptables persistent
 echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
 echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
-apt install -y iptables-persistent
