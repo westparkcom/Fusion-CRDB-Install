@@ -19,6 +19,9 @@ err_check $?
 
 systemctl stop freeswitch
 apt remove -y freeswitch-systemd
+mv /etc/freeswitch /etc/freeswitch.orig
+mkdir /etc/freeswitch
+cp -R /var/www/fusionpbx/resources/templates/conf/* /etc/freeswitch
 
 if [ .$servernum = .'1' ]; then
 	# Enable mod_python
