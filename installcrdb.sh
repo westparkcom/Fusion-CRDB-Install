@@ -52,7 +52,7 @@ sed -i '/cdrom:/d' /etc/apt/sources.list
 
 # Update the system prior to installation
 apt update
-apt dist-upgrade
+apt -y dist-upgrade
 
 # Install base dependencies
 apt install -y wget nano net-tools
